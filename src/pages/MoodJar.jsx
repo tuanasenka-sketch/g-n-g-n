@@ -468,7 +468,7 @@ const MoodJar = () => {
                 <span>{mood.name}</span>
               </div>
 
-              <img src={`/characters/${key}.png`} alt={mood.name} />
+              <img src={`${import.meta.env.BASE_URL}characters/${key}.png`} alt={mood.name} />
 
               {/* Character-specific hover effects */}
               {key === 'ennui' && <div className="effect sleepy-zzz"><span>z</span><span>z</span><span>z</span></div>}

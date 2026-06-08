@@ -2308,11 +2308,57 @@
   background-size: 30px 52px;
   background-repeat: repeat;
 }
-
 .notebook-cover-pattern.pattern-flowers,
 .library-book-item.pattern-flowers::before {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g stroke='rgba(255,255,255,0.9)' stroke-width='0.6' fill='none'><circle cx='20' cy='20' r='2'/><path d='M20,14 C18,17 22,17 20,20 C18,23 22,23 20,26 M14,20 C17,18 17,22 20,20 C23,18 23,22 20,20'/><circle cx='60' cy='60' r='2'/><path d='M60,54 C58,57 62,57 60,60 C58,63 62,63 60,66 M54,60 C57,58 57,62 60,60 C63,58 63,62 60,60'/></g><g stroke='rgba(0,0,0,0.4)' stroke-width='0.5' fill='none'><circle cx='60' cy='20' r='1.5'/><circle cx='20' cy='60' r='1.5'/></g></svg>");
   background-size: 80px 80px;
 }
 
+@media (max-width: 767px) {
+  .intro-overlay {
+    overflow-y: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    padding: 2rem 1rem !important;
+    height: 100vh !important;
+    box-sizing: border-box !important;
+  }
+
+  .signup-container {
+    margin: 2rem auto !important;
+    padding: 2.5rem 1.5rem !important;
+    height: auto !important;
+  }
+
+  .intro-workspace {
+    height: auto !important;
+    max-height: none !important;
+    padding: 1.5rem 0.5rem !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+  }
+
+  .intro-editor-layout {
+    height: auto !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    gap: 2rem !important;
+  }
+
+  .intro-book-section {
+    margin-bottom: 1.5rem !important;
+    gap: 1.5rem !important;
+  }
+
+  .notebook-cover-preview {
+    max-width: 290px !important;
+    height: 390px !important;
+  }
+}
 
