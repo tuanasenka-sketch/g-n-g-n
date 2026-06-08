@@ -1,0 +1,775 @@
+.mood-jar-page {
+  --color-joy: #FFF275;
+  --color-ennui: #5B618A;
+  --color-fear: #C9B6E4;
+  --color-anger: #F28F8F;
+  --color-embarrassment: #F2C4CE;
+  --color-anxiety: #E08E45;
+  --color-envy: #79D1C3;
+  --color-sadness: #A8D0E6;
+  --color-disgust: #A7D49B;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 0.5s ease-out;
+  padding-top: 0.4rem;
+  padding-bottom: 0.5rem;
+  min-height: calc(100vh - 80px);
+  box-sizing: border-box;
+}
+
+.mood-jar-header {
+  text-align: center;
+  margin-bottom: 0.9rem;
+}
+
+.mood-jar-header h1 {
+  font-size: 1.6rem;
+  color: var(--text-main);
+  margin-bottom: 0.2rem;
+}
+
+.mood-jar-header p {
+  color: var(--text-light);
+  font-size: 0.85rem;
+}
+
+/* Workspace Layout */
+.mood-jar-workspace {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: flex-start;
+  justify-items: center;
+  width: 100%;
+  max-width: 950px;
+  margin-bottom: 1rem;
+}
+
+.jar-column {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.control-column {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 420px;
+}
+
+@media (max-width: 700px) {
+  .mood-jar-workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Jar Container & Glass */
+.jar-container {
+  position: relative;
+  width: 300px;
+  height: 390px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 0 auto;
+}
+
+.jar-glass {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 370px;
+  border-radius: 40px 40px 40px 40px / 10px 10px 80px 80px;
+  border: 4px solid rgba(255, 255, 255, 0.6);
+  border-top: 3px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 
+    inset 0 0 20px rgba(255, 255, 255, 0.5),
+    0 10px 30px rgba(0,0,0,0.05);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  overflow: hidden;
+  transition: background 1s ease;
+  z-index: 10;
+}
+
+.jar-highlight.left {
+  position: absolute;
+  left: 10px;
+  top: 50px;
+  width: 8px;
+  height: 200px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.8), transparent);
+  border-radius: 10px;
+  transform: rotate(2deg);
+}
+
+.jar-highlight.right {
+  position: absolute;
+  right: 15px;
+  top: 80px;
+  width: 4px;
+  height: 100px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent);
+  border-radius: 10px;
+}
+
+.matter-scene {
+  position: absolute;
+  /* canvas 300px wide, jar-glass 200px wide → shift left by (300-200)/2 = 50px */
+  top: -10px;
+  left: -50px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.matter-scene canvas {
+  border-radius: 0 0 40px 40px;
+}
+
+/* Character Lineup Section at the Bottom */
+.character-lineup-section {
+  width: 100%;
+  max-width: 950px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+  padding: 0 1rem;
+}
+
+.character-lineup-section h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-top: 1rem;
+}
+
+.lineup-hint {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-top: 0.3rem;
+  text-align: center;
+}
+
+.character-lineup {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 1rem 0.5rem 0.5rem 0.5rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+}
+
+@media (min-width: 850px) {
+  .character-lineup {
+    justify-content: center;
+  }
+}
+
+.character-lineup::-webkit-scrollbar {
+  height: 6px;
+}
+.character-lineup::-webkit-scrollbar-track {
+  background: transparent;
+}
+.character-lineup::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+}
+
+/* Borderless Standing Character Cutouts */
+.char-card {
+  position: relative;
+  flex: 0 0 64px;
+  height: 90px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: visible;
+}
+
+.char-card img {
+  width: 100%;
+  height: 68px;
+  object-fit: contain;
+  pointer-events: none;
+  transition: transform 0.3s ease;
+}
+
+/* Label Container with name & colored orb dot */
+.char-label-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 4px;
+  pointer-events: none;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.char-ball {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, var(--char-color) 70%);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 
+    0 0 10px var(--char-color),
+    inset 0 0 3px rgba(255, 255, 255, 0.6);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.char-label-container span {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.char-card:hover {
+  transform: translateY(-10px) scale(1.1);
+  z-index: 15;
+}
+
+.char-card:hover .char-label-container {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.char-card:hover .char-label-container span {
+  color: var(--char-color);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
+}
+
+/* Character Specific Animations & Effects on Hover */
+.effect {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity 0.3s ease;
+  z-index: 16;
+}
+
+.char-card:hover .effect {
+  opacity: 1;
+}
+
+/* Specific Hover Animations for Cards */
+.char-card.joy:hover { animation: hover-joy 0.5s ease-out; }
+.char-card.ennui:hover { animation: hover-ennui 1.2s ease-in-out; }
+.char-card.fear:hover { animation: hover-fear 0.1s infinite; }
+.char-card.anger:hover { animation: hover-anger 0.25s infinite alternate; }
+.char-card.embarrassment:hover { animation: hover-embarrassment 0.8s ease-in-out forwards; }
+.char-card.anxiety:hover { animation: hover-anxiety 0.4s infinite alternate; }
+.char-card.envy:hover { animation: hover-envy 0.8s ease-in-out forwards; }
+.char-card.sadness:hover { animation: hover-sadness 1.5s ease-in-out; }
+.char-card.disgust:hover { animation: hover-disgust 0.6s ease-in-out; }
+
+/* General keyframes for card bounce/jumps */
+@keyframes hover-joy {
+  0% { transform: translateY(0) scale(1) rotate(0deg); }
+  30% { transform: translateY(-16px) scale(1.08) rotate(10deg); }
+  60% { transform: translateY(2px) scale(0.96) rotate(-4deg); }
+  100% { transform: translateY(0) scale(1) rotate(0deg); }
+}
+@keyframes hover-ennui {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(5px) rotate(-8deg); }
+}
+@keyframes hover-fear {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  25% { transform: translate(-1px, -1px) rotate(-1deg); }
+  50% { transform: translate(-2px, 0px) rotate(1deg); }
+  75% { transform: translate(0px, 1px) rotate(0deg); }
+  100% { transform: translate(1px, -1px) rotate(-1deg); }
+}
+@keyframes hover-anger {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-3px) rotate(-2deg); }
+}
+@keyframes hover-embarrassment {
+  0% { transform: scale(1) translateX(0); }
+  100% { transform: scale(0.88) translateX(-5px); }
+}
+@keyframes hover-anxiety {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(2px, -4px) rotate(1deg); }
+  50% { transform: translate(-2px, 2px) rotate(-1deg); }
+  75% { transform: translate(-1px, -2px) rotate(1deg); }
+  100% { transform: translate(1px, 2px) rotate(0deg); }
+}
+@keyframes hover-envy {
+  0% { transform: scale(1) translateY(0); }
+  100% { transform: scale(1.15) translateY(-5px); }
+}
+@keyframes hover-sadness {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  40% { transform: translateY(4px) rotate(-8deg); }
+  80% { transform: translateY(6px) rotate(-4deg); }
+}
+@keyframes hover-disgust {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-8deg); }
+  75% { transform: rotate(8deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* ------------------- VISUAL EFFECTS STYLING ------------------- */
+
+/* Ennui (Bıkkınlık) - Floating Sleepy Zzzs */
+.sleepy-zzz {
+  right: -5px;
+  top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.sleepy-zzz span {
+  font-family: inherit;
+  font-weight: 700;
+  color: var(--color-ennui);
+  text-shadow: 0 0 5px rgba(255,255,255,0.8);
+  animation: zzz-float 1.5s infinite linear;
+  opacity: 0;
+}
+.sleepy-zzz span:nth-child(1) { font-size: 0.7rem; animation-delay: 0s; }
+.sleepy-zzz span:nth-child(2) { font-size: 0.85rem; animation-delay: 0.4s; margin-left: 4px; }
+.sleepy-zzz span:nth-child(3) { font-size: 0.55rem; animation-delay: 0.8s; margin-left: -2px; }
+
+@keyframes zzz-float {
+  0% { transform: translate(0, 5px) scale(0.5); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translate(10px, -18px) scale(1.2); opacity: 0; }
+}
+
+/* Sadness (Üzüntü) - Falling Tear Drops */
+.tear-drops {
+  left: 0;
+  right: 0;
+  bottom: -12px;
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+.tear-drops .tear {
+  font-size: 1.1rem;
+  animation: fall-tear 1s infinite linear;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+.tear-drops .tear:nth-child(2) {
+  animation-delay: 0.5s;
+}
+
+@keyframes fall-tear {
+  0% { transform: translateY(-5px) scale(0.8); opacity: 1; }
+  100% { transform: translateY(20px) scale(0.5); opacity: 0; }
+}
+
+/* Fear (Korku) - Sweat Drops */
+.sweat-drops {
+  left: -10px;
+  top: 26px;
+  font-size: 1.2rem;
+  animation: shake-sweat 0.15s infinite;
+}
+@keyframes shake-sweat {
+  0% { transform: translate(1px, 0) rotate(0); }
+  100% { transform: translate(-1px, 1px) rotate(-5deg); }
+}
+
+/* Embarrassment (Utanç) - Blushing Overlay */
+.blush-glow {
+  display: none;
+}
+
+/* Joy (Neşe) - Glowing Aura Sparkle */
+.joy-sparkles {
+  top: -2px;
+  font-size: 1.5rem;
+  animation: rotate-joy-sparkle 2.5s infinite linear;
+  filter: drop-shadow(0 0 8px rgba(255,242,117,0.8));
+}
+@keyframes rotate-joy-sparkle {
+  0% { transform: rotate(0deg) scale(0.9); }
+  50% { transform: rotate(180deg) scale(1.2); }
+  100% { transform: rotate(360deg) scale(0.9); }
+}
+
+/* Anger (Öfke) - Fire on Head */
+.fire-head {
+  top: -4px;
+  font-size: 1.8rem;
+  animation: burn-fire 0.4s infinite alternate;
+  filter: drop-shadow(0 0 8px rgba(242, 143, 143, 0.8));
+}
+@keyframes burn-fire {
+  0% { transform: translateY(0) scale(1) rotate(-3deg); }
+  100% { transform: translateY(-4px) scale(1.15) rotate(3deg); }
+}
+
+/* Anxiety (Kaygı) - Jitter Waves */
+.jitter-lines {
+  right: -12px;
+  top: 30px;
+  font-size: 1.2rem;
+  animation: shake-anxious 0.1s infinite alternate;
+}
+@keyframes shake-anxious {
+  0% { transform: translate(2px, 1px) scale(0.95); }
+  100% { transform: translate(-2px, -1px) scale(1.05); }
+}
+
+/* Disgust (Tiksinti) - Sassy Spark */
+.sassy-spark {
+  right: -12px;
+  bottom: 12px;
+  font-size: 1.2rem;
+  animation: sassy-bounce 0.8s infinite alternate;
+}
+@keyframes sassy-bounce {
+  0% { transform: translateY(0) scale(0.95) rotate(0deg); }
+  100% { transform: translateY(-4px) scale(1.1) rotate(12deg); }
+}
+
+/* Envy (Gıpta) - Sparkly Jealous Stars */
+.envy-stars {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0; left: 0;
+}
+.envy-stars span {
+  font-size: 1.1rem;
+  position: absolute;
+  animation: sparkle-envy 1s infinite alternate;
+  filter: drop-shadow(0 0 6px var(--color-envy));
+}
+.envy-stars span:nth-child(1) { left: -10px; top: -10px; }
+.envy-stars span:nth-child(2) { right: -10px; bottom: -10px; animation-delay: 0.5s; }
+
+@keyframes sparkle-envy {
+  0% { transform: scale(0.6) rotate(0deg); opacity: 0.4; }
+  100% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+}
+
+/* Blender Widget */
+.blender-widget {
+  padding: 1.5rem;
+  width: 100%;
+}
+
+.blender-widget h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-main);
+}
+
+.blender-hint {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-bottom: 1.25rem;
+  line-height: 1.4;
+}
+
+.blender-options {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.blender-option-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.4);
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.blender-option-btn .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--mood-color);
+  box-shadow: 0 0 6px var(--mood-color);
+}
+
+.blender-option-btn:hover {
+  background: rgba(255,255,255,0.8);
+}
+
+.blender-option-btn.selected {
+  background: white;
+  border-color: var(--text-main);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  font-weight: 500;
+}
+
+/* Blender Results */
+.blender-result {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 1rem;
+  border-radius: 16px;
+  border: 1px dashed rgba(255, 255, 255, 0.6);
+  animation: fadeIn 0.3s ease;
+}
+
+.blender-preview-wrapper {
+  flex-shrink: 0;
+}
+
+.blender-preview-sphere {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 
+    inset 0 0 15px rgba(255,255,255,0.5),
+    0 4px 15px rgba(0,0,0,0.08);
+  animation: pulse-wobble-preview 4s infinite ease-in-out;
+}
+
+@keyframes pulse-wobble-preview {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg); 
+    border-radius: 50% 48% 52% 50% / 50% 48% 52% 50%; 
+  }
+  50% { 
+    transform: scale(1.08) rotate(180deg); 
+    border-radius: 48% 52% 50% 48% / 48% 50% 52% 50%; 
+  }
+}
+
+.blender-result-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.blender-result-info h4 {
+  font-size: 1.05rem;
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.merge-drop-btn {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  background: var(--color-water);
+  align-self: flex-start;
+}
+
+/* Blender Placeholder */
+.blender-placeholder {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: rgba(0, 0, 0, 0.02);
+  padding: 1rem;
+  border-radius: 16px;
+  border: 1px dashed rgba(0, 0, 0, 0.05);
+}
+
+.placeholder-sphere {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px dashed var(--text-light);
+  opacity: 0.3;
+}
+
+.blender-placeholder p {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  font-style: italic;
+}
+
+.save-mood-btn {
+  padding: 14px 32px;
+  font-size: 1.05rem;
+  font-weight: 500;
+  align-self: center;
+  background: white;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+/* Weekly Mood Jars Section */
+.weekly-mood-jars-section {
+  width: 100%;
+  max-width: 950px;
+  padding: 2rem;
+  margin-top: 2rem;
+  box-sizing: border-box;
+}
+
+.weekly-mood-jars-section h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
+}
+
+.mini-jars-row {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1rem 0;
+}
+
+@media (max-width: 600px) {
+  .mini-jars-row {
+    gap: 1.5rem;
+  }
+}
+
+.mini-jar-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: default;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.mini-jar-column.empty-jar {
+  cursor: pointer;
+}
+
+.mini-jar-column:hover {
+  transform: translateY(-8px) scale(1.05);
+}
+
+.mini-jar-container {
+  position: relative;
+  width: 55px;
+  height: 100px;
+}
+
+.mini-jar-glass {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 14px 14px 20px 20px / 8px 8px 30px 30px;
+  border: 3px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 
+    inset 0 0 10px rgba(255, 255, 255, 0.6),
+    0 4px 12px rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Wave animation for mini jar liquid */
+.mini-jar-liquid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 82%;
+  border-radius: 0 0 16px 16px;
+  animation: pulse-liquid 4s infinite alternate ease-in-out;
+  box-shadow: inset 0 3px 6px rgba(255, 255, 255, 0.4);
+}
+
+@keyframes pulse-liquid {
+  0% { transform: scaleY(1); }
+  100% { transform: scaleY(1.06); }
+}
+
+.mini-jar-empty-plus {
+  font-size: 1.5rem;
+  color: var(--text-light);
+  opacity: 0.35;
+  font-weight: 300;
+  transition: opacity 0.2s;
+}
+
+.mini-jar-column:hover .mini-jar-empty-plus {
+  opacity: 0.7;
+}
+
+.mini-jar-highlight {
+  position: absolute;
+  left: 3px;
+  top: 8px;
+  width: 3px;
+  height: 50px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), transparent);
+  border-radius: 10px;
+}
+
+/* Stacking balls container and 3D mini balls */
+.mini-jar-balls-container {
+  position: absolute;
+  bottom: 6px;
+  left: 5px;
+  right: 5px;
+  top: 15px;
+  display: flex;
+  flex-wrap: wrap-reverse;
+  align-content: flex-start;
+  justify-content: center;
+  gap: 1.5px;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.mini-jar-ball {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 0.5px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.15),
+    inset 0 0 1px rgba(255, 255, 255, 0.6);
+  flex-shrink: 0;
+  animation: mini-ball-drop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
+}
+
+@keyframes mini-ball-drop {
+  0% {
+    transform: translateY(-20px) scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}

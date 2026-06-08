@@ -1,0 +1,375 @@
+.calendar-page {
+  animation: fadeIn 0.5s ease-out;
+  padding-top: 1rem;
+  position: relative;
+}
+
+.calendar-header {
+  margin-bottom: 2rem;
+}
+
+.calendar-header h1 {
+  font-size: 2.2rem;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+}
+
+.calendar-container {
+  padding: 2rem;
+}
+
+.calendar-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.calendar-nav h2 {
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.calendar-nav button {
+  padding: 8px 16px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.calendar-day-header {
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-light);
+  margin-bottom: 10px;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  background-color: rgba(255,255,255,0.4);
+  border: 1px solid var(--glass-border);
+  position: relative;
+}
+
+.calendar-day:not(.empty):not(.future):hover {
+  animation: cardShake 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform: scale(1.04);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+}
+
+.calendar-day:not(.empty):not(.future):hover::after {
+  content: '📌';
+  position: absolute;
+  top: -10px;
+  left: -6px;
+  font-size: 1.35rem;
+  transform: rotate(-45deg);
+  animation: pinDropAndStrike 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  z-index: 10;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+
+/* Push-in effect when clicking the day */
+.calendar-day:not(.empty):not(.future):active::after {
+  transform: translate(0, 3px) rotate(-45deg) scale(0.9);
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+}
+
+@keyframes pinDropAndStrike {
+  0% {
+    transform: translate(0, -35px) rotate(-90deg) scale(2);
+    opacity: 0;
+  }
+  65% {
+    transform: translate(0, 3px) rotate(-38deg) scale(0.9); /* Strike overshoot */
+    opacity: 1;
+  }
+  100% {
+    transform: translate(0, 0) rotate(-45deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes cardShake {
+  0% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.04) rotate(-1.5deg) translateY(1px); }
+  50% { transform: scale(1.04) rotate(1.2deg) translateY(-0.5px); }
+  75% { transform: scale(1.04) rotate(-0.5deg); }
+  100% { transform: scale(1.04) rotate(0deg); }
+}
+
+.calendar-day.selected {
+  border: 2px solid var(--text-main);
+  transform: scale(1.05);
+}
+
+.calendar-day.empty {
+  background: transparent;
+  border: none;
+  cursor: default;
+}
+
+/* Drawer / Side Panel */
+.day-drawer {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 100%;
+  max-width: 400px;
+  height: 100vh;
+  background: rgba(253, 253, 253, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-left: 1px solid var(--glass-border);
+  box-shadow: -10px 0 30px rgba(0,0,0,0.05);
+  z-index: 2000;
+  transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+.day-drawer.open {
+  right: 0;
+}
+
+.drawer-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.1);
+  backdrop-filter: blur(2px);
+  z-index: 1500;
+}
+
+.close-drawer-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-light);
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.drawer-mood-color {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  box-shadow: 0 0 15px currentColor;
+}
+
+.drawer-header h3 {
+  font-size: 1.5rem;
+}
+
+.drawer-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.drawer-section {
+  padding: 1.25rem;
+}
+
+.drawer-section h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-main);
+  opacity: 0.8;
+}
+
+.drawer-section p, .drawer-section li {
+  font-size: 0.95rem;
+  color: var(--text-main);
+}
+
+.drawer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.drawer-todo-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.6rem;
+  cursor: pointer;
+  padding-left: 0 !important;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.drawer-todo-item::before {
+  display: none !important;
+}
+
+.drawer-todo-item:hover {
+  transform: translateX(3px);
+}
+
+.drawer-todo-checkbox {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.drawer-todo-text {
+  font-size: 0.95rem;
+  color: var(--text-main);
+  transition: opacity 0.2s, text-decoration 0.2s;
+}
+
+.todo-done .drawer-todo-text {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+.drawer-interactive-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.drawer-btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+.drawer-action-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.4);
+  color: var(--text-main);
+  font-size: 1.1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.drawer-action-btn:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: scale(1.15);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.drawer-action-btn:active {
+  transform: scale(0.9);
+}
+
+.journal-snippet {
+  font-style: italic;
+  opacity: 0.8;
+}
+
+/* Drawer Journal Section & Stickers */
+.drawer-journal-content {
+  text-align: left;
+}
+
+.drawer-stickers-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.drawer-sticker-emoji {
+  font-size: 1.8rem;
+  display: inline-block;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.drawer-journal-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.journal-snippet.empty-text {
+  font-style: italic;
+  opacity: 0.5;
+}
+
+/* CSS Keyframe Animations for Calendar Drawer Stickers */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+.animate-pulse {
+  animation: pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes wobble {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(6deg); }
+}
+.animate-wobble {
+  animation: wobble 2s ease-in-out infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.animate-spin {
+  animation: spin 8s linear infinite;
+}
+/* Today, Past, and Future Days Styling */
+.calendar-day.today {
+  border: 2.5px solid #FF9E79 !important; /* Soft orange border */
+  box-shadow: 0 0 12px rgba(255, 158, 121, 0.4);
+  font-weight: 700;
+  background-color: #FFE5D9 !important; /* Soft orange background */
+  color: #D35400 !important; /* Dark orange text */
+}
+
+.calendar-day.past {
+  background-color: #E2E8F0 !important; /* Soft slate grey background */
+  color: #94A3B8 !important; /* Slate grey text */
+  opacity: 0.85;
+}
+
+.calendar-day.future {
+  background-color: #ffffff !important;
+  color: #64748B !important; /* Soft grey text */
+  cursor: default;
+  pointer-events: none; /* Disable clicking future days */
+}

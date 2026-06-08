@@ -1,0 +1,120 @@
+.nav-container {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: auto;
+  width: 70px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-right: 1px solid var(--glass-border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1.5rem 0;
+  gap: 1.25rem;
+  z-index: 1000;
+}
+
+
+.nav-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--text-light);
+  padding: 0.5rem;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  min-width: 60px;
+}
+
+.nav-link span {
+  font-size: 0.7rem;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  color: var(--text-main);
+  background: rgba(0,0,0,0.02);
+}
+
+.nav-link.active {
+  color: var(--text-main);
+  background: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.nav-link.active svg {
+  stroke: var(--color-water);
+  fill: rgba(168, 218, 220, 0.2);
+}
+
+@media (min-width: 768px) {
+  .nav-container {
+    top: 0;
+    bottom: 0;
+    right: auto;
+    width: 80px;
+    flex-direction: column;
+    justify-content: center;
+    border-top: none;
+    border-right: 1px solid var(--glass-border);
+    padding: 2rem 0;
+    gap: 1.5rem;
+  }
+  
+  .nav-link {
+    padding: 1rem 0;
+  }
+  
+  .nav-link span {
+    display: none; /* Hide text on sidebar for cleaner look, or keep it small */
+  }
+  
+  .nav-link:hover span {
+    display: block;
+    position: absolute;
+    left: 80px;
+    background: white;
+    padding: 4px 12px;
+    border-radius: 8px;
+    box-shadow: var(--glass-shadow);
+    white-space: nowrap;
+    z-index: 100;
+  }
+}
+
+/* Sidebar Logo Styling */
+.nav-logo-area {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .nav-logo-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 2.5rem;
+    width: 100%;
+    cursor: default;
+  }
+  
+  .nav-logo-svg {
+    width: 52px;
+    height: 32px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.02));
+  }
+  
+  .nav-logo-text {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: 0.5px;
+    font-family: 'Outfit', sans-serif;
+  }
+}

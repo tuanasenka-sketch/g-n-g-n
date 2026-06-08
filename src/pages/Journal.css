@@ -1,0 +1,487 @@
+.journal-page {
+  position: relative;
+  min-height: calc(100vh - 100px);
+  animation: fadeIn 0.5s ease-out;
+  display: flex;
+  flex-direction: column;
+}
+
+.journal-glow {
+  position: absolute;
+  top: -100px;
+  left: -100px;
+  width: 500px;
+  height: 500px;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(40px);
+}
+
+.journal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-top: 1rem;
+}
+
+.date-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(10px);
+}
+
+.mood-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.date-badge span {
+  font-weight: 500;
+  color: var(--text-main);
+  font-size: 0.95rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.prompt-btn, .mode-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--color-btn-bg);
+  color: var(--color-btn-text);
+  border: 1px solid rgba(25, 118, 210, 0.15);
+  font-size: 0.9rem;
+  padding: 8px 16px;
+}
+
+.mode-toggle-btn.active {
+  background: var(--color-btn-active-bg, #90CAF9);
+  border-color: #42A5F5;
+  color: #0D47A1;
+  box-shadow: 0 0 12px rgba(66, 165, 245, 0.4);
+  font-weight: 600;
+}
+
+.journal-editor {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-soft);
+  border: 1px solid var(--glass-border);
+  padding: 2rem;
+  box-shadow: var(--glass-shadow);
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+}
+
+.journal-editor.decorating-mode {
+  background: rgba(255, 255, 255, 0.55);
+  border: 2px dashed rgba(255, 214, 78, 0.6);
+  box-shadow: inset 0 0 20px rgba(255, 214, 78, 0.05);
+}
+
+.journal-title-input {
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-main);
+  font-family: inherit;
+  margin-bottom: 1rem;
+  outline: none;
+}
+
+.journal-title-input::placeholder {
+  color: var(--text-light);
+  opacity: 0.5;
+}
+
+.journal-content-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  resize: none;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-main);
+  font-family: inherit;
+  outline: none;
+  min-height: 300px;
+}
+
+.journal-content-input::placeholder {
+  color: var(--text-light);
+  opacity: 0.5;
+}
+
+/* Stickers Layer */
+.stickers-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-soft);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.stickers-layer.active {
+  pointer-events: auto;
+}
+
+.placed-sticker-wrapper {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.placed-sticker-wrapper:active {
+  cursor: grabbing;
+}
+
+.placed-sticker {
+  font-size: 2.5rem;
+  display: inline-block;
+  /* Premium die-cut sticker outlines */
+  filter: 
+    drop-shadow(0 0 1px #fff) 
+    drop-shadow(0 0 1.5px #fff) 
+    drop-shadow(0 0 2.5px #fff) 
+    drop-shadow(0 3px 8px rgba(0,0,0,0.18));
+}
+
+/* Sticker Toolbar Controls */
+.sticker-controls {
+  position: absolute;
+  top: -24px;
+  display: flex;
+  gap: 3px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 2px 4px;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateY(5px);
+  z-index: 12;
+}
+
+.placed-sticker-wrapper:hover .sticker-controls {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.control-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  background: #f0f0f0;
+  color: #333;
+  transition: background 0.2s;
+}
+
+.control-btn:hover {
+  background: #e0e0e0;
+}
+
+.control-btn.delete {
+  background: #ff5a5a;
+  color: white;
+}
+
+.control-btn.delete:hover {
+  background: #ff3333;
+}
+
+/* Sticker Drawer */
+.journal-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.sticker-drawer {
+  padding: 1.5rem;
+  width: 100%;
+  animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+}
+
+.sticker-drawer h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
+}
+
+.sticker-drawer p {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  margin-bottom: 1.25rem;
+}
+
+.sticker-presets {
+  display: flex;
+  gap: 0.8rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: thin;
+}
+
+.sticker-presets::-webkit-scrollbar {
+  height: 6px;
+}
+.sticker-presets::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sticker-presets::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+}
+
+.preset-sticker-btn {
+  flex: 0 0 76px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 6px;
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.4);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.preset-sticker-btn:hover {
+  background: white;
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.preset-sticker-btn .emoji {
+  font-size: 2rem;
+  display: inline-block;
+}
+
+.preset-sticker-btn .name {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-light);
+  text-align: center;
+}
+
+.save-journal-btn {
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 12px 24px;
+}
+
+/* CSS Keyframe Animations for Stickers */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+.animate-pulse {
+  animation: pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes wobble {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(6deg); }
+}
+.animate-wobble {
+  animation: wobble 2s ease-in-out infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.animate-spin {
+  animation: spin 8s linear infinite;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Inspiration Prompt Modal Styling */
+.prompt-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.prompt-modal-content {
+  position: relative;
+  width: 90%;
+  max-width: 460px;
+  padding: 2.25rem;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 28px;
+  border: 1px solid var(--glass-border);
+  box-shadow: 
+    0 24px 60px rgba(0, 0, 0, 0.08),
+    inset 0 0 20px rgba(255, 255, 255, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+  animation: modalScaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.25) forwards;
+}
+
+.prompt-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.prompt-modal-header h3 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.prompt-sparkle-icon {
+  color: #ffd64e;
+  animation: sparkleRotate 4s infinite linear;
+}
+
+.prompt-text-display {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text-main);
+  font-style: italic;
+  line-height: 1.7;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.45);
+  border-radius: 18px;
+  border: 1.5px dashed rgba(0, 0, 0, 0.06);
+  width: 100%;
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  animation: promptWobble 0.4s ease-out;
+}
+
+.prompt-modal-actions {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.cycle-prompt-btn, .accept-prompt-btn {
+  flex: 1;
+  padding: 12px 16px;
+  font-size: 0.92rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.accept-prompt-btn {
+  background: var(--color-btn-active-bg, #90CAF9);
+  border-color: #42A5F5;
+  color: #0D47A1;
+  font-weight: 600;
+}
+
+.close-modal-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.03);
+  font-size: 1.3rem;
+  color: var(--text-light);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.close-modal-btn:hover {
+  background: rgba(255, 90, 90, 0.1);
+  color: #ff3333;
+}
+
+/* Custom modal keyframes */
+@keyframes modalScaleUp {
+  from { transform: scale(0.9) translateY(15px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes sparkleRotate {
+  0% { transform: rotate(0deg) scale(0.95); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(0.95); }
+}
+
+@keyframes promptWobble {
+  0% { transform: scale(0.96); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}

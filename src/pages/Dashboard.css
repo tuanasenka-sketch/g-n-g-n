@@ -1,0 +1,78 @@
+.dashboard-container {
+  padding: 1rem 0;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-header p {
+  color: var(--text-light);
+  font-size: 1.1rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Mood Prompt Widget */
+.mood-prompt-widget {
+  background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.4));
+  border: 1px solid rgba(249, 241, 165, 0.5); /* subtle joy color border */
+}
+
+.mood-prompt-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.mood-prompt-content h3 {
+  font-size: 1.3rem;
+  color: var(--text-main);
+}
+
+.mood-prompt-content p {
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+
+.mood-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, var(--color-joy), var(--color-sadness));
+  color: var(--text-main);
+  font-weight: 500;
+  border: none;
+  margin-top: 0.5rem;
+}
+
+.mood-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}

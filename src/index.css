@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Outfit:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg-color-start: #FDFDFD;
+  --bg-color-end: #F6F6F6;
+  --text-main: #4A4A4A;
+  --text-light: #8A8A8A;
+  
+  /* Mood Colors */
+  --color-joy: #F9F1A5;
+  --color-sadness: #B3C5D7;
+  --color-anger: #F2B5B5;
+  --color-disgust: #C5D3A8;
+  --color-fear: #D6C7E8;
+  
+  /* Specific UI Colors */
+  --color-water: #A8DADC;
+  --color-progress: #F2B5B5; /* Pastel salmon */
+  --color-progress-alt: #C5D3A8; /* Soft green */
+  
+  /* Blue Button Colors */
+  --color-btn-bg: #E3F2FD;
+  --color-btn-text: #1976D2;
+  --color-btn-hover: #BBDEFB;
+  --color-btn-active-bg: #90CAF9;
+  
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-shadow: 0 8px 32px 0 rgba(180, 185, 200, 0.15);
+  
+  --radius-soft: 24px;
+  --radius-pill: 50px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  color: var(--text-main);
+  background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Glassmorphism Utility */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--radius-soft);
+}
+
+.soft-btn {
+  background: var(--color-btn-bg);
+  border: 1px solid rgba(25, 118, 210, 0.15);
+  border-radius: var(--radius-pill);
+  padding: 12px 24px;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--color-btn-text);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.08);
+  transition: all 0.3s ease;
+}
+
+.soft-btn:hover {
+  background: var(--color-btn-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(25, 118, 210, 0.15);
+}
+
+/* Layout utilities */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding: 1.5rem;
+  padding-bottom: 6rem; /* for mobile nav */
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.mobile-top-bar {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .app-container {
+    flex-direction: row;
+  }
+  .main-content {
+    padding-bottom: 2rem;
+    padding-left: 6.5rem; /* Offset for desktop sidebar (80px + padding) */
+  }
+}
+
+@media (max-width: 767px) {
+  .mobile-top-bar {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 70px; /* Offset for left navigation */
+    right: 0;
+    height: 56px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--glass-border);
+    align-items: center;
+    padding: 0 1rem;
+    z-index: 999;
+  }
+
+  .mobile-logo-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mobile-logo-svg {
+    width: 36px;
+    height: 22px;
+  }
+
+  .mobile-logo-text {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .main-content {
+    margin-left: 70px;
+    width: calc(100% - 70px) !important;
+    max-width: calc(100% - 70px) !important;
+    padding: 1.5rem !important;
+    padding-top: 72px !important; /* Clearance for the fixed mobile top bar */
+    padding-bottom: 2rem !important;
+    box-sizing: border-box;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    overflow-y: auto;
+  }
+
+  /* Center all page panels horizontally */
+  .dashboard-container,
+  .mood-jar-page,
+  .journal-page,
+  .library-page,
+  .calendar-page,
+  .profile-page {
+    width: 100% !important;
+    max-width: 480px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box;
+  }
+}
+
